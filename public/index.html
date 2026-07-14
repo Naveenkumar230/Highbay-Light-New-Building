@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AIPL High Bay Lighting</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-title">
+        <span class="light-icon">💡</span>
+        High Bay Lighting</span>
+      <span class="mqtt-pill" id="mqttPill">
+        <span class="dot" id="mqttDot"></span>
+        <span id="mqttText">connecting…</span>
+      </span>
+    </div>
+    <div class="actions">
+      <button class="btn" id="allOnBtn">All ON</button>
+      <button class="btn" id="allOffBtn">All OFF</button>
+      <button class="icon-btn" id="themeToggle" title="Toggle theme" aria-label="Toggle theme">
+        <svg id="themeIconSun" viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+        <svg id="themeIconMoon" viewBox="0 0 24 24" width="18" height="18" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </header>
+  <div class="legend">
+    <span class="legend-item"><span class="swatch on"></span> Light is ON</span>
+    <span class="legend-item"><span class="swatch off"></span> Light is OFF</span>
+    <span class="legend-item"><span class="badge-sample"></span> Offline — no recent signal from this device (last known state shown, may be stale)</span>
+  </div>
+  <main id="rowsContainer" class="rows-container"></main>
+  <script src="app.js"></script>
+</body>
+</html>

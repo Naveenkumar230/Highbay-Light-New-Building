@@ -1,0 +1,440 @@
+:root {
+  --bg: #eef1f5;
+  --surface: #f4f6f9;
+  --card: #ffffff;
+  --text: #1c2230;
+  --text-secondary: #6b7280;
+  --border: #e3e7ee;
+  --shadow-light: rgba(255, 255, 255, 0.9);
+  --shadow-dark: rgba(160, 170, 185, 0.55);
+  --off-grad-start: #f3f5f8;
+  --off-grad-end: #dde2e9;
+  --off-icon: #9aa3b2;
+  --on-grad-start: #8fe066;
+  --on-grad-end: #43972b;
+  --on-icon: #ffffff;
+  --on-glow: rgba(67, 151, 43, 0.45);
+  --offline-color: #e0a838;
+}
+
+[data-theme="dark"] {
+  --bg: #14161a;
+  --surface: #1b1e24;
+  --card: #1f232a;
+  --text: #eef1f5;
+  --text-secondary: #9aa1ad;
+  --border: #2a2e36;
+  --shadow-light: rgba(255, 255, 255, 0.04);
+  --shadow-dark: rgba(0, 0, 0, 0.6);
+  --off-grad-start: #2c2f36;
+  --off-grad-end: #1a1c20;
+  --off-icon: #7c828c;
+  --on-grad-start: #7fd858;
+  --on-grad-end: #e7f709;
+  --on-icon: #ffffff;
+  --on-glow: rgba(74, 158, 46, 0.5);
+  --offline-color: #e0a838;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 24px;
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  z-index: 10;
+  border-bottom: 1px solid var(--border);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-title {
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
+.mqtt-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #c7cbd1;
+}
+
+.dot.connected { background: #43972b; box-shadow: 0 0 0 3px rgba(67,151,43,0.18); }
+.dot.connecting { background: #e0a838; }
+.dot.disconnected, .dot.error { background: #d8534f; }
+
+.dot.server-unreachable {
+  background: #d8534f;
+  box-shadow: 0 0 0 3px rgba(216, 83, 79, 0.25);
+  animation: pulse-dot 1.4s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn {
+  font-size: 13px;
+  font-weight: 500;
+  padding: 8px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  cursor: pointer;
+  transition: transform 0.1s ease, background 0.15s ease;
+}
+.btn:hover { background: var(--surface); }
+.btn:active { transform: scale(0.97); }
+
+.icon-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  text-decoration: none;
+}
+.icon-btn svg { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ---------- legend ---------- */
+.legend {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: var(--text-secondary);
+  padding: 10px 24px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.legend-item { display: flex; align-items: center; gap: 6px; }
+.swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  display: inline-block;
+}
+.swatch.on { background: var(--accent-solid, #f2b807); }
+.swatch.off { background: var(--off-grad-end); }
+.badge-sample {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--offline-color);
+  display: inline-block;
+}
+
+.rows-container {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.row-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 18px 20px;
+}
+
+.row-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.row-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.row-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.row-actions button {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 5px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+.row-actions button:hover { color: var(--text); }
+
+.lights-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+/* ---------- high-bay fixture light unit ---------- */
+.light-unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 76px;
+  position: relative;
+}
+
+.light-btn {
+  width: 64px;
+  height: 92px;
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.08s ease;
+}
+.light-btn:active { transform: scale(0.96); }
+
+.light-btn .fixture { width: 64px; height: 92px; overflow: visible; }
+
+.light-btn .mount-line { stroke: var(--text-secondary); stroke-width: 2; }
+.light-btn .mount-bracket { fill: var(--text-secondary); }
+
+.light-btn .housing {
+  fill: var(--card);
+  stroke: var(--border);
+  stroke-width: 1.5;
+  transition: stroke 0.2s ease, stroke-dasharray 0.2s ease;
+}
+
+.light-btn .fin { stroke: var(--border); stroke-width: 1.5; }
+
+.light-btn .lens {
+  fill: var(--off-grad-end);
+  stroke: var(--border);
+  stroke-width: 1;
+  transition: fill 0.2s ease, stroke 0.2s ease;
+}
+
+.light-btn .cone {
+  fill: var(--accent-solid, #f2b807);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+/* on state -- lens lit, soft flat light cone underneath */
+.light-btn.on .lens {
+  fill: var(--accent-solid, #f2b807);
+  stroke: none;
+}
+.light-btn.on .cone { opacity: 0.35; }
+
+/* offline state -- dashed outline, no fill, badge shown via sibling */
+.light-btn.offline .housing {
+  stroke: var(--offline-color);
+  stroke-dasharray: 4 3;
+}
+.light-btn.offline .lens {
+  stroke: var(--offline-color);
+  stroke-dasharray: 3 2;
+  fill: var(--off-grad-end);
+}
+.light-btn.offline .cone { opacity: 0; }
+
+.light-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 560px) {
+  .topbar { flex-wrap: wrap; gap: 10px; }
+  .legend { padding: 10px 16px; }
+  .light-unit { width: 64px; }
+  .light-btn, .light-btn .fixture { width: 54px; height: 78px; }
+}
+
+[data-ui-theme="classic-green"] { --accent-solid: #43972b; }
+[data-ui-theme="ocean-blue"] { --accent-solid: #1f7bbf; }
+[data-ui-theme="sunset-orange"] { --accent-solid: #e3711d; }
+[data-ui-theme="midnight-purple"] { --accent-solid: #6c2bd9; }
+[data-ui-theme="mono-gray"] { --accent-solid: #5a5f68; }
+
+/* make the existing buttons follow the chosen accent */
+.btn#allOnBtn { border-color: var(--accent-solid, #f2b807); color: var(--accent-solid, #f2b807); }
+.save-btn { background: var(--accent-solid, #f2b807); }
+
+/* ---------- theme picker cards (admin page) ---------- */
+.theme-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+@media (max-width: 480px) {
+  .theme-grid { grid-template-columns: 1fr; }
+}
+
+.theme-card {
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  padding: 14px;
+  cursor: pointer;
+  background: var(--surface);
+  transition: border-color 0.15s ease, transform 0.1s ease;
+}
+.theme-card:hover { transform: translateY(-2px); }
+.theme-card.selected {
+  border-color: var(--accent-solid, #f2b807);
+}
+
+.theme-preview {
+  width: 100%;
+  height: 48px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.theme-name {
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.theme-check {
+  display: none;
+  color: var(--accent-solid, #f2b807);
+}
+.theme-card.selected .theme-check { display: inline-flex; }
+
+.theme-apply-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  background: var(--accent-solid, #f2b807);
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+.theme-apply-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.light-icon {
+  flex-shrink: 0;
+  padding-right: 6px;
+}
+
+.light-btn .rod { stroke: #2b2f36; stroke-width: 3; }
+
+.light-btn .dome {
+  fill: #232838;
+  stroke: var(--border);
+  stroke-width: 1.5;
+  transition: stroke 0.2s ease, stroke-dasharray 0.2s ease;
+}
+
+.light-btn .wood-band { fill: #c99a5b; }
+
+.light-btn .shade {
+  fill: #232838;
+  stroke: var(--border);
+  stroke-width: 1.5;
+  transition: stroke 0.2s ease, stroke-dasharray 0.2s ease;
+}
+
+.light-btn .glow {
+  fill: #f5b942;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.light-btn .rim {
+  fill: #dcd3b8;
+  stroke: var(--border);
+  stroke-width: 1;
+  transition: fill 0.2s ease, stroke 0.2s ease;
+}
+
+/* on state */
+.light-btn.on .glow { opacity: 0.3; }
+.light-btn.on .rim {
+  fill: #f5b942;
+  stroke: none;
+}
+
+/* offline state */
+.light-btn.offline .dome,
+.light-btn.offline .shade {
+  stroke: var(--offline-color);
+  stroke-dasharray: 4 3;
+}
+.light-btn.offline .rim {
+  fill: #dcd3b8;
+  stroke: var(--offline-color);
+  stroke-dasharray: 3 2;
+}
+.light-btn.offline .glow { opacity: 0; }
+
+.light-btn .light-cone {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.light-btn .cone-1 { fill: #f5b942; opacity: 0.45; }
+.light-btn .cone-2 { fill: #f5b942; opacity: 0.25; }
+.light-btn .cone-3 { fill: #f5b942; opacity: 0.12; }
+
+.light-btn.on .light-cone { opacity: 1; }
+.light-btn.offline .light-cone { opacity: 0; }
