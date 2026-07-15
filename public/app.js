@@ -1,31 +1,19 @@
 const ROWS = 5;
 const LIGHTS_PER_ROW = 7;
 
-// ---------- high-bay fixture markup ----------
-// Same fixture for every light. State (on / off / offline) is driven purely
-// by CSS classes on the .light-btn wrapper -- see .light-btn.on / .offline
-// rules in style.css -- so this template never needs to change per state.
-function fixtureSvg() {
-  return `
-    <svg class="fixture" width="64" height="92" viewBox="0 0 90 140" aria-hidden="true">
-      <line class="rod" x1="45" y1="0" x2="45" y2="18"/>
-      <path class="dome" d="M20 34 C20 16 70 16 70 34 L70 40 L20 40 Z"/>
-      <rect class="wood-band" x="30" y="38" width="30" height="10" rx="1"/>
-      <path class="shade" d="M24 48 L66 48 L80 84 L10 84 Z"/>
-      <g class="light-cone">
-        <polygon class="cone-3" points="4,84 86,84 90,140 0,140"/>
-        <polygon class="cone-2" points="12,84 78,84 86,120 4,120"/>
-        <polygon class="cone-1" points="20,84 70,84 78,104 12,104"/>
-      </g>
-      <ellipse class="rim" cx="45" cy="84" rx="35" ry="7"/>
-    </svg>`;
-}
-
-// const OFFLINE_ICON = `<svg viewBox="0 0 24 24"><path d="M12 9v4"/><path d="M12 16.5v.01"/><path d="M10.3 3.9 1.8 18a1.8 1.8 0 0 0 1.55 2.7h17.3A1.8 1.8 0 0 0 22.2 18L13.7 3.9a1.8 1.8 0 0 0-3.4 0z"/></svg>`;
-
 const rowsContainer = document.getElementById('rowsContainer');
 const mqttDot = document.getElementById('mqttDot');
 const mqttText = document.getElementById('mqttText');
+const statOnCount = document.getElementById('statOnCount');
+const statRowCount = document.getElementById('statRowCount');
+const statOfflineCount = document.getElementById('statOfflineCount');
+
+// ---------- bulb icon (single shared markup, state driven by CSS class) ----------
+function bulbSvg() {
+  return `<svg viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.6 10.8c.6.45 1.1 1.1 1.1 1.9V16h5v-.3c0-.8.5-1.45 1.1-1.9A6 6 0 0 0 12 3z"/>
+  </svg>`;
+}
 
 // ---------- build the grid ----------
 function buildGrid() {
@@ -38,8 +26,8 @@ function buildGrid() {
     header.innerHTML = `
       <span class="row-title">Row ${r}</span>
       <div class="row-actions">
-        <button data-row="${r}" data-on="1">ON</button>
-        <button data-row="${r}" data-on="0">OFF</button>
+        <button data-row="${r}" data-on="1">On</button>
+        <button data-row="${r}" data-on="0">Off</button>
       </div>`;
     card.appendChild(header);
 
@@ -51,8 +39,8 @@ function buildGrid() {
       unit.className = 'light-unit';
       unit.id = `unit-${r}-${l}`;
       unit.innerHTML = `
-  <button class="light-btn" id="btn-${r}-${l}" data-row="${r}" data-light="${l}">
-    ${fixtureSvg()}
+  <button class="light-btn" id="btn-${r}-${l}" data-row="${r}" data-light="${l}" aria-label="Light ${l}, row ${r}">
+    ${bulbSvg()}
   </button>
   <span class="light-label">Light ${l}</span>`;
       lightsRow.appendChild(unit);
@@ -61,13 +49,24 @@ function buildGrid() {
     card.appendChild(lightsRow);
     rowsContainer.appendChild(card);
   }
+  statRowCount.textContent = ROWS;
 }
 buildGrid();
+
+// ---------- summary stats ----------
+function updateSummary() {
+  const all = document.querySelectorAll('.light-btn');
+  const on = document.querySelectorAll('.light-btn.on:not(.offline)');
+  const offline = document.querySelectorAll('.light-btn.offline');
+  statOnCount.textContent = `${on.length}/${all.length}`;
+  statOfflineCount.textContent = offline.length;
+}
 
 // ---------- click handlers (event delegation) ----------
 rowsContainer.addEventListener('click', (e) => {
   const lightBtn = e.target.closest('.light-btn');
   if (lightBtn) {
+    if (lightBtn.classList.contains('offline')) return; // can't toggle a light with no signal
     const row = lightBtn.dataset.row;
     const light = lightBtn.dataset.light;
     const turningOn = !lightBtn.classList.contains('on');
@@ -108,14 +107,17 @@ function sendAll(on) {
 
 function setLightOptimistic(row, light, on) {
   const btn = document.getElementById(`btn-${row}-${light}`);
-  if (!btn) return;
+  if (!btn || btn.classList.contains('offline')) return;
   btn.classList.toggle('on', on);
+  updateSummary();
 }
 
 function applyLightState(s) {
   const btn = document.getElementById(`btn-${s.row}-${s.light}`);
   if (!btn) return;
+  btn.classList.toggle('offline', !!s.offline);
   btn.classList.toggle('on', !!s.on);
+  updateSummary();
 }
 
 // ---------- initial load ----------
@@ -124,6 +126,7 @@ fetch('/api/status')
   .then(data => {
     setMqttStatus(data.mqttStatus);
     data.lights.forEach(applyLightState);
+    updateSummary();
   })
   .catch(() => setMqttStatus('server-unreachable'));
 
@@ -152,6 +155,7 @@ events.addEventListener('open', () => {
     .then(data => {
       setMqttStatus(data.mqttStatus);
       data.lights.forEach(applyLightState);
+      updateSummary();
     })
     .catch(() => setMqttStatus('server-unreachable'));
 });
@@ -183,10 +187,6 @@ function setMqttStatus(status) {
   mqttText.textContent = labels[status] || status;
 }
 
-// ---------- apply saved UI accent theme ----------
-const savedUiTheme = localStorage.getItem('aipl-ui-theme') || 'classic-green';
-document.documentElement.setAttribute('data-ui-theme', savedUiTheme);
-
 // ---------- theme toggle ----------
 const themeToggle = document.getElementById('themeToggle');
 const sunIcon = document.getElementById('themeIconSun');
@@ -206,4 +206,10 @@ applyTheme(savedTheme);
 themeToggle.addEventListener('click', () => {
   const current = document.documentElement.getAttribute('data-theme');
   applyTheme(current === 'dark' ? 'light' : 'dark');
+});
+
+// ---------- logout ----------
+document.getElementById('logoutBtn').addEventListener('click', () => {
+  localStorage.removeItem('aipl-auth');
+  window.location.replace('login.html');
 });

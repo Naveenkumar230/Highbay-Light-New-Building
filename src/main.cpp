@@ -65,10 +65,10 @@
 // constexpr const char* DEVICE_ID = "AIPL/HighBay/Row_5/Light_1";
 // constexpr const char* DEVICE_ID = "AIPL/HighBay/Row_5/Light_2";
 // constexpr const char* DEVICE_ID = "AIPL/HighBay/Row_5/Light_3";
-constexpr const char* DEVICE_ID = "AIPL/HighBay/Row_5/Light_4";
+// constexpr const char* DEVICE_ID = "AIPL/HighBay/Row_5/Light_4";
 // constexpr const char* DEVICE_ID = "AIPL/HighBay/Row_5/Light_5";
 // constexpr const char* DEVICE_ID = "AIPL/HighBay/Row_5/Light_6";
-// constexpr const char* DEVICE_ID = "AIPL/HighBay/Row_5/Light_7";
+constexpr const char* DEVICE_ID = "AIPL/HighBay/Row_5/Light_7";
 // ── Parse ROW_INDEX and LIGHT_INDEX from DEVICE_ID at compile time ──
 
 
